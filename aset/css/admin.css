@@ -1,0 +1,83 @@
+.atas {
+	position: fixed;
+	top: 0px;left: 0px;right: 0px;
+	z-index: 1;
+	line-height: 60px;
+}
+.atas .judul {
+	margin: 0;
+	font-size: 22px;
+	font-family: OBold;
+	cursor: pointer;
+	float: left;
+	margin-left: 5%;
+}
+
+.bagTambah {
+	position: fixed;
+	top: 125px;left: 5%;
+	width: 25%;
+	border: 1px solid #ddd;
+	color: #555;
+}
+.bagTambah h3,.container h2 {
+	margin: 0;
+	margin-bottom: 25px;
+	padding: 1px 15px;
+	line-height: 50px;
+}
+.container h2 {
+	background-color: #ecf0f1;
+	font-size: 20px;
+	padding: 1px 25px;
+}
+.bagTambah .box { width: 83%; }
+
+.container {
+	position: absolute;
+	top: 125px;right: 5%;
+	width: 60%;
+	border: 1px solid #eee;
+	color: #555;
+	margin-bottom: 35px;
+}
+.container .result {
+	width: 30.5%;
+	display: inline-block;
+	text-align: center;
+	box-shadow: 1px 1px 10px 1px #ddd;
+	margin: 10px 10px;
+	padding: 1px;
+	color: #555;
+}
+.result:nth-child(1),.result:nth-child(3n + 1) {
+	margin-left: 0px;
+}
+.result:nth-child(3n) { margin-right: 0px; }
+.container .result h3 {
+	margin: 35px 0px;
+	font-family: OBold;
+	font-size: 25px;
+}
+.container .result .ket {
+	margin-bottom: 35px;
+}
+
+#maps {
+	position: absolute;
+	top: 120px;left: 5%;
+	width: 55%;
+	height: 500px;
+}
+
+.kanan {
+	position: fixed;
+	top: 120px;right: 5%;
+	width: 30%;
+}
+
+#loadPoint li {
+	list-style: none;
+	line-height: 45px;
+	border-bottom: 1px solid #ddd;
+}

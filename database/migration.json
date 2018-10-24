@@ -1,0 +1,30 @@
+{
+	"tabel": {
+		"admin": [
+			"idadmin int(11)",
+			"username varchar(50)",
+			"password varchar(50)",
+			"registered int(11)"
+		],
+		"angkot": [
+			"idangkot int(11)",
+			"nama varchar(2)",
+			"added int(11)"
+		],
+		"waypoint": [
+			"idway int(11)",
+			"idangkot varchar(2)",
+			"coords varchar(55)",
+			"placeName varchar(155)",
+			"added int(11)"
+		]
+	},
+	"atribut": {
+		"primary key": [
+			"admin.idadmin"
+		],
+		"unique key": [
+			"admin.username"
+		]	
+	}
+}
