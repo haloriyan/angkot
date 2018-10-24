@@ -24,32 +24,30 @@ class angkot extends admin {
 					->eksekusi();
 	}
 	public function load() {
+		$public = $_COOKIE['public'];
 		$q = EMBO::tabel('angkot')->pilih()->eksekusi();
 		if(EMBO::hitung($q) == 0) {
 			echo "No result";
 		}else {
 			while($r = EMBO::ambil($q)) {
+				if($public == 1) {
+					echo "<a href='./waypoint&idangkot=".$r['idangkot']."'>";
+				}
 				echo "<div class='result'>".
 						"<div class='wrap'>".
 							"<h3>".$r['nama']."</h3>".
-							"<div class='ket'>".
-								"<a href='./set-jalur&angkot=".$r['idangkot']."'><button class='tbl biru'><i class='fa fa-cogs'></i></button></a> &nbsp; ".
-								"<button class='tbl merah' onclick='hapus(this.value)' value='".$r['idangkot']."'><i class='fa fa-trash'></i></button>".
+							"<div class='ket'>";
+								if($public != 1) {
+									echo "<a href='./set-jalur&angkot=".$r['idangkot']."'><button class='tbl biru'><i class='fa fa-cogs'></i></button></a> &nbsp; ".
+										 "<button class='tbl merah' onclick='hapus(this.value)' value='".$r['idangkot']."'><i class='fa fa-trash'></i></button>";
+								}
+				echo
 							"</div>".
 						"</div>".
 					 "</div>";
-			}
-		}
-	}
-	public function loadPoint() {
-		$id = $_COOKIE['idangkot'];
-
-		$q = EMBO::tabel('waypoint')->pilih()->dimana(['idangkot' => $id])->eksekusi();
-		if(EMBO::hitung($q) == 0) {
-			echo "No result";
-		}else {
-			while($r = EMBO::ambil($q)) {
-				echo "<li>".$r['placeName']."</li>";
+				if($public == 1) {
+					echo "</a>";
+				}
 			}
 		}
 	}

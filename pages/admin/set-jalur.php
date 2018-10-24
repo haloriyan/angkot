@@ -34,10 +34,11 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
 
 <div class="kanan">
 	<form id="formAdd">
+		<input type="hidden" id="idangkot" value="<?php echo $idangkot; ?>">
 		<input type="hidden" id="setLat">
 		<input type="hidden" id="setLng">
 		<input type="text" class="box" id="place" placeholder="Search place">
-		<button id="submit" class="tbl biru">Submit</button>
+		<button id="submit" class="tbl biru">submitmit</button>
 	</form>
 	<h3>List Point</h3>
 	<div id="loadPoint"></div>
@@ -46,7 +47,7 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
 <script src="../aset/js/embo.js"></script>
 <script>
 	function loadPoint() {
-		ambil("../angkot/loadPoint", (res) => {
+		ambil("../waypoint/load", (res) => {
 			$("#loadPoint").tulis(res)
 		})
 	}
@@ -68,9 +69,9 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
           center: {lat: myLat, lng: myLng}
         });
 
-        map.addListener('bounds_changed', function() {
-          searchBox.setBounds(map.getBounds());
-        });
+        // map.addListener('bounds_changed', function() {
+        //   searchBox.setBounds(map.getBounds());
+        // });
 
         // set marker
         var marker = new google.maps.Marker({
@@ -81,7 +82,8 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
         })
 
         // set coords
-        google.maps.event.addListener(marker, 'dragend', function(evt) {
+        // google.maps.event.addListener(marker, 'dragstart', function(evt) {
+        marker.addListener('dragend', function(evt) {
 			// alert(evt.latLng.lat())
 			// Set Lat Lng
 			let setLat = evt.latLng.lat()
@@ -105,10 +107,6 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
           // For each place, get the icon, name and location.
           var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
-            if (!place.geometry) {
-              console.log("Returned place contains no geometry");
-              return;
-            }
 
             // Create a marker for each place.
             marker.push(new google.maps.Marker({
@@ -148,15 +146,27 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
 				$("#place").isi(formattedAddr)
 				// infowindow.open(map, marker)
 			}else {
-				alert('No result foound')
+				// alert('No result foound')
 			}
+		})
+	}
+	function hapus(val) {
+		let del = "idway="+val
+		pos("../waypoint/delete", del, () => {
+			loadPoint()
 		})
 	}
 
 	submit('#formAdd', () => {
+		let idangkot = $("#idangkot").isi()
 		let setLat = $("#setLat").isi()
 		let setLng = $("#setLng").isi()
 		let place = $("#place").isi()
+		let add = "lat="+setLat+"&lng="+setLng+"&place="+place+"&idangkot="+idangkot
+		pos("../waypoint/add", add, () => {
+			location.reload()
+		})
+		return false
 	})
 
 </script>
