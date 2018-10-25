@@ -21,7 +21,7 @@
 			<input type="text" class="box" id="q" placeholder="Cari lokasi">
 			<button id="btnCari"><i class="fa fa-search"></i></button>
 			<br />
-			<input type="text" class="box" id="inputLocation" placeholder="Masukkan lokasi (nama jalan / kelurahan)" style="display: none;">
+			<input type="text" class="box" id="inputLocation" placeholder="Masukkan lokasi kamu saat ini (nama jalan / kelurahan)" style="display: none;">
 			<div id="myLocation">
 				Lokasi kamu sekarang :<br />
 				<span id="currLocation"><i class="fa fa-spinner"></i> loading...</span>
