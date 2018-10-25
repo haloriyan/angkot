@@ -78,19 +78,61 @@ class waypoint extends angkot {
 	public function cari() {
 		$kw = $_COOKIE['kw'];
 		$asal = "joyoboyo";
-		// ngecek onok ta gak?
+		// ngecek onok trayek ta gak?
 		$q = EMBO::tabel('waypoint')->pilih()->dimana(['placeName' => $kw], 'like')->eksekusi();
 		if(EMBO::hitung($q) == 0) {
 			echo "No result";
 		}else {
+			/*
+				lek onok munculno trayek
+				----------------------------------------
+				| Bemo  | coords | placeName   | added |
+				----------------------------------------
+				| C     | NaN    | hayam wuruk |       |
+				----------------------------------------
+				| D     | NaN    | hayam wuruk |       |
+				----------------------------------------
+			*/
 			while($r = EMBO::ambil($q)) {
 				$price = "Rp 5.000";
 				$idangkot = $r['idangkot'];
 				$cekTrayek = EMBO::query("SELECT * FROM waypoint WHERE idangkot = '$idangkot' AND placeName LIKE '%$asal%' GROUP BY idangkot");
 				if(EMBO::hitung($cekTrayek) == 0) {
 					// oper
-					echo "oper";
-					$y = EMBO::query("SELECT * FROM waypoint WHERE placeName LIKE '%$asal%'");
+					$y = EMBO::query("SELECT * FROM waypoint WHERE idangkot = '$idangkot'");
+					while($hai = EMBO::ambil($y)) {
+						$namaAngkot = angkot::info($hai['idangkot'], 'nama');
+						$place = $hai['placeName'];
+						$p = explode(",", $place);
+						// tanpa no
+						$n = explode("No", $p[0]);
+						// tanpa jalan
+						if(strpos($n[0], "Jl.") !== false) {
+							$exp = "Jl.";
+						}else {
+							$exp = "Jalan";
+						}
+						$j = explode($exp, $n[0]);
+						if($j[0] == "") {
+							$toShow = $j[1];
+						}else {
+							$toShow = $j[0];
+						}
+						$lim = explode(" ", $toShow);
+						$toShow = $lim[0]." ".$lim[1];
+						$toShow = str_replace(' ', '', $toShow);
+						$halo = EMBO::query("SELECT * FROM waypoint WHERE placeName LIKE '%$toShow%' AND idangkot != '$idangkot'");
+						while($dunia = EMBO::ambil($halo)) {
+							$dari = angkot::info($dunia['idangkot'], 'nama');
+							$ke = angkot::info($idangkot, 'nama');
+							echo "<a href='#'>".
+									"<div class='result'>".
+										"<h3>".$dari." oper ke ".$ke."</h3>".
+										"<p>Rp 10.000</p>".
+									"</div>".
+								 "</a>";
+						}
+					}
 				}else {
 					// gak oper
 					while($rTrayek = EMBO::ambil($cekTrayek)) {

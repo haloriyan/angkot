@@ -36,6 +36,8 @@
 	</div>
 </div>
 
+<div id="map"></div>
+
 <script src="aset/js/embo.js"></script>
 <script>
 	function load() {
@@ -58,6 +60,21 @@
 		})
 		return false
 	})
+
+	function getPosisi() {
+		if(navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				var posisi = {
+					lat: position.coords.latitude,
+					lng: position.coords.longitude,
+				}
+				console.log(posisi)
+			})
+		}else {
+			console.log('gaisok geolocation')
+		}
+	}
+	
 </script>
 
 </body>

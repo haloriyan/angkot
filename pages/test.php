@@ -1,5 +1,15 @@
 <?php
-setcookie('limit', '', time() + 250, '/');
+
+$string = "jalan hayam wuruk baru";
+$needle = "hay";
+
+if(strpos($string, $needle) !== false) {
+	echo "ada";
+}else {
+	echo "tiada";
+}
+
+exit();
 ?>
 <!DOCTYPE html>
 <html>

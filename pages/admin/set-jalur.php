@@ -72,7 +72,7 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
         //   searchBox.setBounds(map.getBounds());
         // });
 
-        // set marker
+        // set default marker
         var marker = new google.maps.Marker({
         	position: {lat: myLat, lng: myLng},
         	map: map,
