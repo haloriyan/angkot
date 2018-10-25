@@ -77,7 +77,15 @@ class waypoint extends angkot {
 	}
 	public function cari() {
 		$kw = $_COOKIE['kw'];
-		$asal = "joyoboyo";
+		$asal = $_COOKIE['asal'];
+		// pisah titik
+		$k = explode(".", $asal);
+		if(strpos($asal, ".") !== false) {
+			$asal = $k[1];
+		}else {
+			$asal = $k[0];
+		}
+
 		// ngecek onok trayek ta gak?
 		$q = EMBO::tabel('waypoint')->pilih()->dimana(['placeName' => $kw], 'like')->eksekusi();
 		if(EMBO::hitung($q) == 0) {
