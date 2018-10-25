@@ -2,6 +2,11 @@
 include 'angkot.php';
 
 class waypoint extends angkot {
+	public function locate($place, $kolom) {
+		$q = EMBO::tabel('waypoint')->pilih($kolom)->dimana(['placeName' => $place], 'like')->eksekusi();
+		$r = EMBO::ambil($q);
+		return $r[$kolom];
+	}
 	public function load() {
 		$id = $_COOKIE['idangkot'];
 
@@ -63,17 +68,40 @@ class waypoint extends angkot {
 	public function search() {
 		$query = "SELECT id, name, address, lat, lng, ( 3959 * acos( cos( radians('%s') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( lat ) ) ) ) AS distance FROM markers HAVING distance < '%s' ORDER BY distance LIMIT 0 , 20";
 	}
-	public function start() {
-		$id = $_COOKIE['idangkot'];
+	public function start($id) {
 		$get = EMBO::tabel('waypoint')->pilih()->dimana(['idangkot' => $id])->urutkan('added', 'ASC')->batas(1)->eksekusi();
 		$r = EMBO::ambil($get);
 		return $r['coords'];
 	}
-	public function end() {
-		$id = $_COOKIE['idangkot'];
+	public function end($id) {
 		$get = EMBO::tabel('waypoint')->pilih()->dimana(['idangkot' => $id])->urutkan('added', 'DESC')->batas(1)->eksekusi();
 		$r = EMBO::ambil($get);
 		return $r['coords'];
+	}
+	public function extractPlaceName($name) {
+		$p = explode(",", $name);
+		// tanpa no
+		$n = explode("No", $p[0]);
+		// tanpa jalan
+		if(strpos($n[0], "Jl.") !== false) {
+			$exp = "Jl.";
+		}else {
+			$exp = "Jalan";
+		}
+		$j = explode($exp, $n[0]);
+		if($j[0] == "") {
+			$toShow = $j[1];
+			}else {
+				$toShow = $j[0];
+			}
+			$lim = explode(" ", $toShow);
+			$toShow = $lim[0]." ".$lim[1];
+			if(str_split($toShow)[0] == " ") {
+				$toShow = substr($toShow, 1);
+			}else {
+			$toShow = $toShow;
+		}
+		return $toShow;
 	}
 	public function cari() {
 		$kw = $_COOKIE['kw'];
@@ -112,30 +140,17 @@ class waypoint extends angkot {
 							while($hai = EMBO::ambil($y)) {
 								$namaAngkot = angkot::info($hai['idangkot'], 'nama');
 								$place = $hai['placeName'];
-								$p = explode(",", $place);
-								// tanpa no
-								$n = explode("No", $p[0]);
-								// tanpa jalan
-								if(strpos($n[0], "Jl.") !== false) {
-									$exp = "Jl.";
-								}else {
-									$exp = "Jalan";
-								}
-								$j = explode($exp, $n[0]);
-								if($j[0] == "") {
-									$toShow = $j[1];
-								}else {
-									$toShow = $j[0];
-								}
-								$lim = explode(" ", $toShow);
-								$toShow = $lim[0]." ".$lim[1];
-								$toShow = str_replace(' ', '', $toShow);
+								$toShow = $this->extractPlaceName($place);
+								
 								$halo = EMBO::query("SELECT * FROM waypoint WHERE placeName LIKE '%$toShow%' AND idangkot != '$idangkot'");
 								while($dunia = EMBO::ambil($halo)) {
 									$dari = angkot::info($dunia['idangkot'], 'nama');
 									$ke = angkot::info($idangkot, 'nama');
+									$extractedPlace = $this->extractPlaceName($dunia['placeName']);
 									echo "<tr>".
-											"<td>Berangkat dari <b>".$asal."</b> menuju <b>".$kw."</b></td>".
+											"<td>Berangkat dari <b>".$asal."</b> menuju <b>".$kw."</b>. &nbsp; <a href='./waypoint&idangkot=".$dunia['idangkot']."&idangkots=$idangkot'><button id='view' class='tbl biru' onclick='aturPlaceOper(this.value)' value='".$extractedPlace."'>lihat di peta</button></a><br />".
+											"Bertemu di sekitar ".$extractedPlace.
+											"</td>".
 											"<td>".$dari." & ".$ke."</td>".
 											"<td>Rp 10.000</td>".
 										 "</tr>";
@@ -146,7 +161,7 @@ class waypoint extends angkot {
 							while($rTrayek = EMBO::ambil($cekTrayek)) {
 								$namaAngkot = angkot::info($rTrayek['idangkot'], 'nama');
 								echo "<tr>".
-										"<td>Berangkat dari <b>".$asal."</b> menuju <b>".$kw."</b></td>".
+										"<td>Berangkat dari <b>".$asal."</b> menuju <b>".$kw."</b> &nbsp; <button id='view' onclick='lihat(this.value)' value='".$idangkot."' class='tbl biru'>lihat di peta</button></td>".
 										"<td>".$namaAngkot."</td>".
 										"<td>".$price."</td>".
 									 "</tr>";

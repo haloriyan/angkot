@@ -1,9 +1,32 @@
 <?php
 include 'aksi/ctrl/waypoint.php';
 $idangkot = $_GET['idangkot'];
+$idangkots = $_GET['idangkots'];
+$tempatOper = $_COOKIE['tempatOper'];
 setcookie('idangkot', $idangkot, time() + 5555, '/');
-$startRute = $waypoint->start();
-$endRute = $waypoint->end();
+setcookie('idangkots', $idangkots, time() + 5555, '/');
+
+if($idangkots != '') {
+  $startRute = $waypoint->start($idangkot);
+  $endRute = $waypoint->end($idangkots);
+}else {
+  $startRute = $waypoint->start($idangkot);
+  $endRute = $waypoint->end($idangkot);
+}
+
+function getTempatOper($place) {
+  $waypoint = new waypoint();
+  $coords = $waypoint->locate($place, 'coords');
+  $c = explode("|", $coords);
+  $lat = $c[0];
+  $lng = $c[1];
+  $res = "{
+  location: new google.maps.LatLng(".$lat.", ".$lng."),
+  stopover: false
+}";
+  return $res;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -45,21 +68,19 @@ $endRute = $waypoint->end();
   let lngEnd = endRute.split("|")[1]
 
 	function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-		// let waypts = []
-		// let checkboxArr = document.getElementById('waypoints')
-		// for(var i = 0; i < checkboxArr.length; i++) {
-		// 	if(checkboxArr[i].selected) {
-		// 		waypts.push({
-		// 			location: checkboxArr[i].value,
-		// 			stopover: false
-		// 		})
-		// 	}
-		// }
 		directionsService.route({
          	origin: new google.maps.LatLng(latStart, lngStart),
          	destination: new google.maps.LatLng(latEnd, lngEnd),
          	// waypoints: waypts,
-         	waypoints: [<?php echo $waypoint->get(); ?>],
+         	waypoints: [
+            <?php
+              if($idangkots == '') {
+                echo $waypoint->get();
+              }else {
+                echo getTempatOper($tempatOper);
+              }
+            ?>
+          ],
          	optimizeWaypoints: true,
          	travelMode: 'DRIVING'
         }, function(response, status) {

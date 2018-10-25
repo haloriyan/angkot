@@ -7,6 +7,12 @@
 	<link href="aset/fw/build/fw.css" rel="stylesheet">
 	<link href="aset/fw/build/font-awesome.min.css" rel="stylesheet">
 	<link href="aset/css/style.index.css" rel="stylesheet">
+	<style>
+		#view {
+			padding: 6px 10px;
+			font-size: 17px;
+		}
+	</style>
 </head>
 <body>
 
@@ -18,10 +24,10 @@
 	<div class="wrap">
 		<form id="formCari">
 			<h3>Mau kemana?</h3>
-			<input type="text" class="box" id="q" placeholder="Cari lokasi">
+			<input type="text" class="box" id="q" placeholder="Cari lokasi" value="hayam wuruk">
 			<button id="btnCari"><i class="fa fa-search"></i></button>
 			<br />
-			<input type="text" class="box" id="inputLocation" placeholder="Masukkan lokasi kamu saat ini (nama jalan / kelurahan)" style="display: none;">
+			<input type="text" class="box" id="inputLocation" placeholder="Masukkan lokasi kamu saat ini (nama jalan / kelurahan)" style="display: none;" value="joyoboyo">
 			<div id="myLocation">
 				Lokasi kamu sekarang :<br />
 				<span id="currLocation"><i class="fa fa-spinner"></i> loading...</span>
@@ -39,6 +45,7 @@
 				<div class="ke-kanan" id="xSearch"><i class="fa fa-close"></i></div>
 			</h3>
 			<div id="load"></div>
+			<div id="loadMap"></div>
 		</div>
 	</div>
 </div>
@@ -124,14 +131,30 @@
 		}, function(results, status) {
 			if(status === 'OK') {
 				let formattedAddr = results[0].formatted_address
-				// infowindow.setContent(formattedAddr)
-				console.log(formattedAddr)
 				$("#myLoc").isi(formattedAddr)
 				$("#currLocation").tulis(formattedAddr)
-				// infowindow.open(map, marker)
 			}else {
 				// alert('No result foound')
 			}
+		})
+	}
+	function loadMap() {
+		ambil("./waypoint", (res) => {
+			$("#loadMap").tulis(res)
+		})
+	}
+	function lihat(val) {
+		// let set = "namakuki=idangkot&value="+val+"&durasi=4555"
+		// pos("./aksi/setCookie.php", set, () => {
+		// 	console.log(set)
+		// 	loadMap()
+		// })
+		mengarahkan('./waypoint&idangkot='+val)
+	}
+	function aturPlaceOper(val) {
+		let set = "namakuki=tempatOper&value="+val+"&durasi=4555"
+		pos("./aksi/setCookie.php", set, () => {
+			//
 		})
 	}
 	setTimeout(function() {
