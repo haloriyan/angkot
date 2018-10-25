@@ -17,11 +17,10 @@ $endRute = $waypoint->end();
 </head>
 <body>
 
-<div id="map" style="height: 300px;"></div> 
+<div id="map" style="height: 500px;"></div> 
 <input type="hidden" id="startRute" value="<?php echo $startRute; ?>">
 <input type="hidden" id="endRute" value="<?php echo $endRute; ?>">
 
-<textarea id="myWay"></textarea>
 
 <script src='aset/js/embo.js'></script>
 <!-- AIzaSyD8NuAKWkdiDlpdNiJ_HA1l2w6oTYNoZVY -->
@@ -30,21 +29,14 @@ $endRute = $waypoint->end();
 		let directionsService = new google.maps.DirectionsService;
 		var directionsDisplay = new google.maps.DirectionsRenderer;
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
+          zoom: 14,
           center: {lat: -7.270156914276002, lng: 112.72879890040281}
         });
         directionsDisplay.setMap(map);
 
         calculateAndDisplayRoute(directionsService, directionsDisplay);
 	}
-  function loadPoint() {
-    ambil("./waypoint/get", (res) => {
-      $("#myWay").isi(res)
-    })
-  }
-  loadPoint()
 
-  let myWayPoint = JSON.stringify($("#myWay").isi())
   let startRute = $("#startRute").isi()
   let endRute = $("#endRute").isi()
   let latStart = startRute.split("|")[0]

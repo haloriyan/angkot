@@ -1,39 +1,64 @@
-#map {
-	position: absolute;
-	top: 0px;left: 0px;right: 0px;bottom: 0px;
-}
-#cari {
-	position: absolute;
-	top: 80px;left: 5%;right: 5%;
-	width: 86%;
-}
-#myAngkot {
-	position: absolute;
-	bottom: 10px;left: 5%;right: 5%;
-	z-index: 2;
-	height: 150px;
-	overflow-x: scroll;
-	white-space: nowrap;
-}
-#myAngkot .result {
-	width: 22.5%;
-	display: inline-block;
-	text-align: center;
+.atas {
+	position: fixed;
+	top: 0px;left: 0px;right: 0px;
+	line-height: 65px;
+	color: #555;
+	z-index: 1;
 	background-color: #fff;
 	box-shadow: 1px 1px 10px 1px #ddd;
-	margin: 10px 10px;
-	padding: 1px;
+}
+.atas .judul {
+	margin: 0;
+	margin-left: 5%;
+	font-family: OBold;
+	font-size: 22px;
+	cursor: pointer;
+}
+
+.container {
+	position: absolute;
+	top: 150px;left: 0px;right: 0px;
+	text-align: center;
+}
+.container #formCari {
+	width: 50%;
+	display: inline-block;
+	text-align: left;
 	color: #555;
 }
-.result:nth-child(1),.result:nth-child(3n + 1) {
-	margin-left: 0px;
-}
-.result:nth-child(3n) { margin-right: 0px; }
-#myAngkot .result h3 {
-	margin: 35px 0px;
-	font-family: OBold;
+#formCari h3 {
 	font-size: 25px;
+	font-family: OLight;
 }
-#myAngkot .result .ket {
-	margin-bottom: 35px;
+#formCari .box {
+	font-size: 18px;
+	height: 50px;
+}
+#formCari #btnCari {
+	margin-left: -55px;
+	background: none;
+	border: none;
+	color: #555;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.popup {
+	border-radius: 6px;
+	padding-bottom: 25px;
+}
+.popupWrapper {
+	left: 15%;right: 15%;
+}
+
+.result {
+	float: left;
+	box-shadow: 1px 1px 10px 1px #ddd;
+	width: 24%;
+	text-align: center;
+	background-color: #fff;
+	margin: 10px 10px;
+}
+.result:nth-child(1),.result:nth-child(4n + 1) {
+	margin-left: 0px;
 }

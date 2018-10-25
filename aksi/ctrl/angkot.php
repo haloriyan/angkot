@@ -10,6 +10,7 @@ class angkot extends admin {
 	public function delete() {
 		$id = EMBO::pos('idangkot');
 		$del = EMBO::tabel('angkot')->hapus()->dimana(['idangkot' => $id])->eksekusi();
+		$x 	 = EMBO::tabel('waypoint')->hapus()->dimana(['idangkot' => $id])->eksekusi();
 		return $del;
 	}
 	public function add() {

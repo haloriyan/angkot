@@ -65,9 +65,8 @@
 
 #maps {
 	position: absolute;
-	top: 120px;left: 5%;
-	width: 55%;
-	height: 500px;
+	top: 60px;left: 0%;bottom: 0px;
+	width: 60%;
 }
 
 .kanan {

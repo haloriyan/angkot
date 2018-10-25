@@ -6,6 +6,8 @@ if($angkot->info($idAngkot, "nama") == "") {
 	die("error");
 }
 
+$namaAngkot = $angkot->info($idAngkotwee, "nama");
+
 setcookie('idangkot', $idAngkot, time() + 4000, '/');
 
 ?>
@@ -22,14 +24,11 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
 <body>
 	
 <div class="atas biru">
-	<h1 class="judul">Set Jalur</h1>
+	<h1 class="judul">Set Jalur Angkot <?php echo $namaAngkot; ?></h1>
 </div>
 
 <div id="maps">
-	<div id="map" style="height: 90%"></div>
-	<div class="bag-tombol">
-		<button class="biru">Add Rute</button>
-	</div>
+	<div id="map" style="height: 100%"></div>
 </div>
 
 <div class="kanan">
@@ -82,8 +81,7 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
         })
 
         // set coords
-        // google.maps.event.addListener(marker, 'dragstart', function(evt) {
-        marker.addListener('dragend', function(evt) {
+        google.maps.event.addListener(marker, 'dragend', function(evt) {
 			// alert(evt.latLng.lat())
 			// Set Lat Lng
 			let setLat = evt.latLng.lat()
@@ -115,6 +113,9 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
               position: place.geometry.location,
               draggable: true
             }));
+            let thisLoc = place.geometry.location
+            $("#setLat").isi(thisLoc.lat())
+            $("#setLng").isi(thisLoc.lng())
 
             if (place.geometry.viewport) {
               // Only geocodes have viewport.

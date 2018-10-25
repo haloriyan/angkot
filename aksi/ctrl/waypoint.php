@@ -5,7 +5,7 @@ class waypoint extends angkot {
 	public function load() {
 		$id = $_COOKIE['idangkot'];
 
-		$q = EMBO::tabel('waypoint')->pilih()->dimana(['idangkot' => $id])->eksekusi();
+		$q = EMBO::tabel('waypoint')->pilih()->dimana(['idangkot' => $id])->urutkan('added', 'DESC')->eksekusi();
 		if(EMBO::hitung($q) == 0) {
 			echo "No result";
 		}else {
@@ -74,6 +74,37 @@ class waypoint extends angkot {
 		$get = EMBO::tabel('waypoint')->pilih()->dimana(['idangkot' => $id])->urutkan('added', 'DESC')->batas(1)->eksekusi();
 		$r = EMBO::ambil($get);
 		return $r['coords'];
+	}
+	public function cari() {
+		$kw = $_COOKIE['kw'];
+		$asal = "joyoboyo";
+		// ngecek onok ta gak?
+		$q = EMBO::tabel('waypoint')->pilih()->dimana(['placeName' => $kw], 'like')->eksekusi();
+		if(EMBO::hitung($q) == 0) {
+			echo "No result";
+		}else {
+			while($r = EMBO::ambil($q)) {
+				$price = "Rp 5.000";
+				$idangkot = $r['idangkot'];
+				$cekTrayek = EMBO::query("SELECT * FROM waypoint WHERE idangkot = '$idangkot' AND placeName LIKE '%$asal%' GROUP BY idangkot");
+				if(EMBO::hitung($cekTrayek) == 0) {
+					// oper
+					echo "oper";
+					$y = EMBO::query("SELECT * FROM waypoint WHERE placeName LIKE '%$asal%'");
+				}else {
+					// gak oper
+					while($rTrayek = EMBO::ambil($cekTrayek)) {
+						$namaAngkot = angkot::info($rTrayek['idangkot'], 'nama');
+						echo "<a href='./waypoint&idangkot=".$rTrayek['idangkot']."'>".
+							 	"<div class='result'>".
+									"<h3>".$namaAngkot."</h3>".
+									"<p>".$price."</p>".
+							 	"</div>".
+							 "</a>";
+					}
+				}
+			}
+		}
 	}
 }
 
