@@ -95,10 +95,13 @@
 			let lng = pos.coords.longitude
 			$("#myLat").isi(lat)
 			$("#myLng").isi(lng)
-		})
+		}, function error(msg) {
+			alert('Please enable your GPS')
+		}, { maximumAge:0, timeout:5000, enableHighAccuracy: true })
 	}else {
 		console.log('gaisok geolocation')
 	}
+
 	function initMap() {
 		var geocoder = new google.maps.Geocoder;
 		var infowindow = new google.maps.InfoWindow;
