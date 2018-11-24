@@ -1,7 +1,7 @@
 <?php
-include 'controller.php';
+include 'users.php';
 
-class admin extends EMBO {
+class admin extends users {
 	public function me($u, $kolom) {
 		$q = EMBO::tabel('admin')->pilih($kolom)->dimana(['username' => $u])->eksekusi();
 		if(EMBO::hitung($q) == 0) {

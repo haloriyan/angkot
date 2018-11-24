@@ -1,0 +1,24 @@
+a { color: #2196f3; }
+.container {
+	position: absolute;
+	top: 90px;left: 32%;right: 32%;
+}
+.container form {
+	background-color: #fff;
+	color: #555;
+	box-shadow: 1px 1px 5px 1px #ddd;
+	padding: 1px;
+}
+.container form .box {
+	width: 100%;
+	font-size: 17px;
+}
+.container .bag-tombol {
+	margin-bottom: 25px;
+	margin-top: 15px;
+}
+.container .opt {
+	margin-bottom: 30px;
+}
+.bag-tombol button { border-radius: 6px; }
+#formReg { display: none; }

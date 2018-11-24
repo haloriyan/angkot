@@ -1,3 +1,9 @@
+<?php
+include 'aksi/ctrl/users.php';
+
+$sesi = $users->sesi(1);
+
+?>
 <!DOCTYPE html>
 <html>
 <head>

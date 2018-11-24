@@ -6,132 +6,82 @@ if($angkot->info($idAngkot, "nama") == "") {
 	die("error");
 }
 
-$namaAngkot = $angkot->info($idAngkotwee, "nama");
+$namaAngkot = $angkot->info($idAngkot, "nama");
 
 setcookie('idangkot', $idAngkot, time() + 4000, '/');
-
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="">
+	<meta name="viewport" content="width=device-width, initial-scale = 1">
 	<title>Admin Angkot</title>
 	<link href="../aset/fw/build/fw.css" rel="stylesheet">
 	<link href="../aset/fw/build/font-awesome.min.css" rel="stylesheet">
 	<link href="../aset/css/admin.css" rel="stylesheet">
+	<style>
+		#map {
+			position: absolute;
+			top: 60px;left: 0px;bottom: 0px;
+			width: 60%;
+		}
+		.kanan {
+			position: absolute;
+			top: 60px;right: 0px;bottom: 0px;
+			width: 40%;
+		}
+		.kanan .wrap { margin: 6%; }
+		.box { font-size: 16px; }
+	</style>
 </head>
 <body>
-	
+
 <div class="atas biru">
 	<h1 class="judul">Set Jalur Angkot <?php echo $namaAngkot; ?></h1>
 </div>
 
-<div id="maps">
-	<div id="map" style="height: 100%"></div>
-</div>
+<div id="map"></div>
 
 <div class="kanan">
-	<form id="formAdd">
-		<input type="hidden" id="idangkot" value="<?php echo $idangkot; ?>">
-		<input type="hidden" id="setLat">
-		<input type="hidden" id="setLng">
-		<input type="text" class="box" id="place" placeholder="Search place">
-		<button id="submit" class="tbl biru">submitmit</button>
-	</form>
-	<h3>List Point</h3>
-	<div id="loadPoint"></div>
+	<div class="wrap">
+		<form id="formAdd">
+			<input type="text" class="box" id="address">
+			<button class="tbl biru">Add</button>
+			<input type="hidden" id="latInput">
+			<input type="hidden" id="lngInput">
+		</form>
+		<h3>List Point</h3>
+		<div style="overflow: auto;height: 365px;" id="loadPoint"></div>
+	</div>
 </div>
 
-<script src="../aset/js/embo.js"></script>
+<script type="text/javascript" src='https://maps.google.com/maps/api/js?libraries=places&key=AIzaSyDqYJGuWw9nfoyPG8d9L1uhm392uETE-mA'></script>
+<script src="../aset/js/jquery-3.1.1.js"></script>
+<script src="../aset/js/locationpicker.jquery.min.js"></script>
 <script>
+	let myLat = -7.270156914276002
+	let myLng = 112.72879890040281
+
 	function loadPoint() {
-		ambil("../waypoint/load", (res) => {
-			$("#loadPoint").tulis(res)
+		$.get("../waypoint/load", (res) => {
+			$("#loadPoint").html(res)
+		})
+	}
+	function hapus(val) {
+		let del = "idway="+val
+		$.ajax({
+			type: "POST",
+			url: "../waypoint/delete",
+			data: del,
+			success: function() {
+				loadPoint()
+			}
 		})
 	}
 	loadPoint()
-	let myLat = -7.270156914276002
-	let myLng = 112.72879890040281
-	let myInput = $("#place")
-	let marker = []
-	function initMap() {
-		let directionsService = new google.maps.DirectionsService;
-		var directionsDisplay = new google.maps.DirectionsRenderer;
-		var searchBox = new google.maps.places.SearchBox(myInput)
+	function getPlaceName(setLat, setLng) {
 		var geocoder = new google.maps.Geocoder;
 		var infowindow = new google.maps.InfoWindow;
-        
-        // set map
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 14,
-          center: {lat: myLat, lng: myLng}
-        });
-
-        // map.addListener('bounds_changed', function() {
-        //   searchBox.setBounds(map.getBounds());
-        // });
-
-        // set default marker
-        var marker = new google.maps.Marker({
-        	position: {lat: myLat, lng: myLng},
-        	map: map,
-        	title: 'Hello world',
-        	draggable: true
-        })
-
-        // set coords
-        google.maps.event.addListener(marker, 'dragend', function(evt) {
-			// alert(evt.latLng.lat())
-			// Set Lat Lng
-			let setLat = evt.latLng.lat()
-			let setLng = evt.latLng.lng()
-			$("#setLat").isi(setLat)
-			$("#setLng").isi(setLng)
-
-			getPlaceName(geocoder, map, infowindow)
-		})
-
-		// searchBox
-		searchBox.addListener('places_changed', function() {
-          var places = searchBox.getPlaces();
-
-          // Clear out the old markers.
-          Array.prototype.forEach.call(marker, mark => {
-            mark.setMap(null);
-          });
-          marker = [];
-
-          // For each place, get the icon, name and location.
-          var bounds = new google.maps.LatLngBounds();
-          places.forEach(function(place) {
-
-            // Create a marker for each place.
-            marker.push(new google.maps.Marker({
-              map: map,
-              title: place.name,
-              position: place.geometry.location,
-              draggable: true
-            }));
-            let thisLoc = place.geometry.location
-            $("#setLat").isi(thisLoc.lat())
-            $("#setLng").isi(thisLoc.lng())
-
-            if (place.geometry.viewport) {
-              // Only geocodes have viewport.
-              bounds.union(place.geometry.viewport);
-            } else {
-              bounds.extend(place.geometry.location);
-            }
-          });
-          map.fitBounds(bounds);
-        });
-
-		directionsDisplay.setMap(map); // set map
-	}
-	function getPlaceName(geocoder, map, infowindow) {
-		let setLat = $("#setLat").isi()
-		let setLng = $("#setLng").isi()
 		let latLng = { lat: parseFloat(setLat), lng: parseFloat(setLng) }
 
 		geocoder.geocode({
@@ -144,34 +94,46 @@ setcookie('idangkot', $idAngkot, time() + 4000, '/');
 				})
 				let formattedAddr = results[0].formatted_address
 				// infowindow.setContent(formattedAddr)
-				$("#place").isi(formattedAddr)
+				$("#address").val(formattedAddr)
 				// infowindow.open(map, marker)
 			}else {
 				// alert('No result foound')
 			}
 		})
 	}
-	function hapus(val) {
-		let del = "idway="+val
-		pos("../waypoint/delete", del, () => {
-			loadPoint()
-		})
-	}
-
-	submit('#formAdd', () => {
-		let idangkot = $("#idangkot").isi()
-		let setLat = $("#setLat").isi()
-		let setLng = $("#setLng").isi()
-		let place = $("#place").isi()
+	$('#map').locationpicker({
+		location: {
+			latitude: myLat,
+			longitude: myLng
+		},
+		radius: 0,
+		inputBinding: {
+			latitudeInput: $('#latInput'),
+			longitudeInput: $('#lngInput'),
+			locationNameInput: $("#address")
+		},
+		onchanged: function() {
+			getPlaceName($('#latInput').val(), $('#lngInput').val())
+		},
+		enableAutocomplete: true,
+	})
+	$("#formAdd").submit(() => {
+		let idangkot = $("#idangkot").val()
+		let setLat = $("#latInput").val()
+		let setLng = $("#lngInput").val()
+		let place = $("#address").val()
 		let add = "lat="+setLat+"&lng="+setLng+"&place="+place+"&idangkot="+idangkot
-		pos("../waypoint/add", add, () => {
-			location.reload()
+		$.ajax({
+			type: "POST",
+			url: "../waypoint/add",
+			data: add,
+			success: function() {
+				loadPoint()
+			}
 		})
 		return false
 	})
-
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8NuAKWkdiDlpdNiJ_HA1l2w6oTYNoZVY&callback=initMap&libraries=places"></script>
 
 </body>
 </html>
